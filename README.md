@@ -24,3 +24,7 @@ A web-based Hospital Management System built using the MERN stack to manage pati
 
 ## Author
 Ambuj Saxena
+## Screenshots
+
+![Homepage](Screenshot%202026-01-13%20164449.png)
+![Message](Screenshot%202026-01-13%20164506.png)
