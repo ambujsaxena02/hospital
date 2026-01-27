@@ -19,7 +19,7 @@ app.use(
     origin: [
       process.env.FRONTEND_URL, 
       process.env.DASHBOARD_URL, 
-      /\.vercel\.app$/  // This allows any URL ending in .vercel.app
+      /\.vercel\.app$/  // This Regex allows ANY URL ending in .vercel.app
     ],
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
