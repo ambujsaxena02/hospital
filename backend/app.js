@@ -13,12 +13,13 @@ const app = express();
 
 config({ path: "./config/config.env" });
 
+// FIX: Flexible CORS to allow ALL Vercel preview and production links
 app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL, 
       process.env.DASHBOARD_URL, 
-      "https://hospital-five-ruddy.vercel.app"
+      /\.vercel\.app$/  // This allows any URL ending in .vercel.app
     ],
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
