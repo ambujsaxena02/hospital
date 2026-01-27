@@ -15,8 +15,6 @@ import Login from "./Pages/Login";
 
 const App = () => {
   const { isAuthenticated, setIsAuthenticated, setUser } = useContext(Context);
-
-  // FIX: This line checks Vercel for the live URL, otherwise it uses localhost for your workspace
   const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   useEffect(() => {
@@ -24,9 +22,7 @@ const App = () => {
       try {
         const response = await axios.get(
           `${BACKEND_URL}/api/v1/user/patient/me`,
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
         setIsAuthenticated(true);
         setUser(response.data.user);

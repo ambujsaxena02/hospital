@@ -4,17 +4,15 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { dbConnection } from "./database/dbConnection.js";
-import { errorMiddleware } from "./middlewares/errorMiddleware.js";
+import { errorMiddleware } from "./middlewares/error.js"; 
 import messageRouter from "./router/messageRouter.js";
 import userRouter from "./router/userRouter.js";
 import appointmentRouter from "./router/appointmentRouter.js";
 
 const app = express();
 
-// Load config
 config({ path: "./config/config.env" });
 
-// FIX: CORS CONFIGURATION
 app.use(
   cors({
     origin: [
@@ -38,15 +36,12 @@ app.use(
   })
 );
 
-// Routes
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/appointment", appointmentRouter);
 
-// Database Connection
 dbConnection();
 
-// Error Middleware (MUST BE LAST)
 app.use(errorMiddleware);
 
 export default app;
