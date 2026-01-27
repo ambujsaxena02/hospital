@@ -1,21 +1,28 @@
 import express from "express";
-import { dbConnection } from "./database/dbConnection.js";
 import { config } from "dotenv";
-import cookieParser from "cookie-parser";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
-import { errorMiddleware } from "./middlewares/error.js";
+import { dbConnection } from "./database/dbConnection.js";
+import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import messageRouter from "./router/messageRouter.js";
 import userRouter from "./router/userRouter.js";
 import appointmentRouter from "./router/appointmentRouter.js";
 
 const app = express();
-config({ path: "./config.env" });
 
+// Load config
+config({ path: "./config/config.env" });
+
+// FIX: CORS CONFIGURATION
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL_ONE, process.env.FRONTEND_URL_TWO],
-    method: ["GET", "POST", "DELETE", "PUT"],
+    origin: [
+      process.env.FRONTEND_URL, 
+      process.env.DASHBOARD_URL, 
+      "https://hospital-five-ruddy.vercel.app"
+    ],
+    methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
 );
@@ -30,11 +37,16 @@ app.use(
     tempFileDir: "/tmp/",
   })
 );
+
+// Routes
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/appointment", appointmentRouter);
 
+// Database Connection
 dbConnection();
 
+// Error Middleware (MUST BE LAST)
 app.use(errorMiddleware);
+
 export default app;
