@@ -12,15 +12,18 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { Context } from "./main";
 import Login from "./Pages/Login";
+
 const App = () => {
-  const { isAuthenticated, setIsAuthenticated, setUser } =
-    useContext(Context);
+  const { isAuthenticated, setIsAuthenticated, setUser } = useContext(Context);
+
+  // FIX: This line checks Vercel for the live URL, otherwise it uses localhost for your workspace
+  const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/v1/user/patient/me",
+          `${BACKEND_URL}/api/v1/user/patient/me`,
           {
             withCredentials: true,
           }
@@ -33,7 +36,7 @@ const App = () => {
       }
     };
     fetchUser();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, setIsAuthenticated, setUser, BACKEND_URL]);
 
   return (
     <>
