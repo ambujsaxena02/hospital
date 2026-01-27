@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { dbConnection } from "./database/dbConnection.js";
+// Path verified: using your "error.js" file
 import { errorMiddleware } from "./middlewares/error.js"; 
 import messageRouter from "./router/messageRouter.js";
 import userRouter from "./router/userRouter.js";
@@ -11,16 +12,23 @@ import appointmentRouter from "./router/appointmentRouter.js";
 
 const app = express();
 
+// Load config
 config({ path: "./config/config.env" });
 
-// FIX: Flexible CORS to allow ALL Vercel preview and production links
+// FINAL CORS HANDSHAKE - No more checking needed
 app.use(
   cors({
-    origin: [
-      process.env.FRONTEND_URL, 
-      process.env.DASHBOARD_URL, 
-      /\.vercel\.app$/  // This Regex allows ANY URL ending in .vercel.app
-    ],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile/curl)
+      if (!origin) return callback(null, true);
+      
+      // Trust ANY Vercel link or local testing
+      if (origin.includes(".vercel.app") || origin.includes("localhost")) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
@@ -37,12 +45,15 @@ app.use(
   })
 );
 
+// Routes
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/appointment", appointmentRouter);
 
+// Database Connection
 dbConnection();
 
+// Error Middleware (This is correctly placed at the end)
 app.use(errorMiddleware);
 
 export default app;
